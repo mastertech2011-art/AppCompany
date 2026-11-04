@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مزاد المراحل</title>
+<meta name="description" content="نشاط تفاعلي: راهني بنقاطك على صحة العبارات عن مراحل إنشاء تطبيقات الهواتف الذكية — التقنية الرقمية ٣">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* Layout: auction-hall look (deliberately single dark theme). Balance plaque on top, the "lot" card in the centre, bet paddles under it. */
+:root{
+  color-scheme:dark;
+  --hall:#141a2e; --hall2:#1c2440; --card:#222b4a; --ink:#f3efe4; --muted:#a3a9c2; --line:#353f63;
+  --gold:#f0b93a; --gold-deep:#b9821a; --win:#3fd08a; --win-bg:#173a2c; --lose:#ff6b7d; --lose-bg:#3d1b26;
+  --display:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.7;
+  background:radial-gradient(120% 70% at 50% -10%,#2a3563 0%,var(--hall) 55%) fixed,var(--hall);
+  padding:max(18px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(40px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:20px;display:flex;align-items:center;gap:10px}
+.brand svg{width:30px;height:30px}
+.course{font-size:12.5px;color:var(--muted)}
+
+.plaque{display:flex;justify-content:space-between;align-items:center;gap:12px;background:linear-gradient(180deg,#2a3358,#202846);border:1px solid var(--line);border-radius:18px;padding:12px 18px}
+.bal-l{font-size:13px;color:var(--muted)}
+.bal{font-family:var(--display);font-size:34px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;line-height:1.1;transition:transform .3s}
+.bal.bump{animation:bump .6s}
+@keyframes bump{40%{transform:scale(1.18)}}
+.lots{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:55%}
+.lots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--line)}
+.lots i.now{border-color:var(--gold)}
+.lots i.w{background:var(--win);border-color:var(--win)}
+.lots i.l{background:var(--lose);border-color:var(--lose)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px 22px;display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden}
+h1{font-family:var(--display);font-size:clamp(30px,8vw,44px);line-height:1.2;margin:0;text-wrap:balance}
+h1 span{color:var(--gold)}
+.lead{margin:0;color:var(--muted)}
+.rules{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.rules li{display:flex;gap:12px;align-items:flex-start}
+.rules b{flex:none;width:30px;height:30px;border-radius:50%;background:var(--hall2);border:1.5px solid var(--gold-deep);color:var(--gold);display:grid;place-items:center;font-family:var(--display)}
+.who{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.who label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);flex:1;min-width:170px}
+.field{width:100%;background:var(--hall2);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px}
+.field:focus{outline:none;border-color:var(--gold)}
+.btn{border:0;border-radius:14px;padding:13px 24px;font-weight:700;font-size:17px;background:var(--gold);color:#1b1608}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn:disabled{opacity:.35;cursor:default}
+
+/* lot */
+.lot-no{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);font-weight:600}
+.lot-no span:first-child{color:var(--gold);font-family:var(--display);letter-spacing:.03em}
+.stmt{font-family:var(--display);font-size:clamp(20px,5.4vw,26px);line-height:1.5;font-weight:600;margin:0;text-wrap:balance;min-height:3em}
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tf button{border:2px solid var(--line);background:var(--hall2);border-radius:14px;padding:14px;font-family:var(--display);font-weight:700;font-size:20px}
+.tf button.sel{border-color:var(--gold);background:#3a3420;color:var(--gold)}
+.sec{font-size:14px;color:var(--muted);font-weight:600;margin:0 0 -8px}
+.paddles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.pad{border:0;background:transparent;padding:0;display:flex;flex-direction:column;align-items:center;gap:0}
+.pad .face{width:100%;aspect-ratio:1;max-width:72px;border-radius:50%;background:var(--hall2);border:2.5px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+.pad .stick{width:8px;height:16px;background:var(--line);border-radius:0 0 4px 4px}
+.pad.sel .face{background:var(--gold);color:#1b1608;border-color:var(--gold)}
+.pad.sel .stick{background:var(--gold-deep)}
+.pad:disabled{opacity:.3;cursor:default}
+.hint{font-size:13px;color:var(--muted);margin:-6px 0 0;text-align:center}
+
+/* reveal */
+.verdict{border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.verdict.w{background:var(--win-bg);color:var(--win)}
+.verdict.l{background:var(--lose-bg);color:var(--lose)}
+.verdict .big{font-family:var(--display);font-size:24px;font-weight:700}
+.verdict p{margin:0;color:var(--ink);font-size:15px}
+.gavel{position:absolute;top:14px;left:14px;width:58px;height:58px;transform-origin:80% 80%;opacity:0}
+.gavel.hit{animation:hit .55s ease-out forwards}
+@keyframes hit{0%{opacity:1;transform:rotate(-50deg)}55%{transform:rotate(12deg)}75%{transform:rotate(0)}100%{opacity:1;transform:rotate(0)}}
+.sold{position:absolute;top:22px;left:80px;font-family:var(--display);font-weight:700;font-size:14px;border:2px solid currentColor;border-radius:8px;padding:0 10px;transform:rotate(-8deg);opacity:0}
+.sold.show{opacity:1;transition:opacity .2s .3s}
+
+/* final */
+.final{align-items:center;text-align:center}
+.trophy{font-size:64px;line-height:1}
+.fbal{font-family:var(--display);font-size:72px;font-weight:700;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+.fbal small{font-size:20px;color:var(--muted)}
+.title{font-family:var(--display);font-size:22px;font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+.stats div{background:var(--hall2);border-radius:14px;padding:10px}
+.stats b{display:block;font-family:var(--display);font-size:22px;font-variant-numeric:tabular-nums}
+.stats span{font-size:12px;color:var(--muted)}
+.cert-name{font-family:var(--display);font-size:24px;font-weight:700;color:var(--ink)}
+.review{width:100%;text-align:start;display:flex;flex-direction:column;gap:6px}
+.review div{background:var(--hall2);border-radius:12px;padding:8px 12px;font-size:13.5px;display:flex;gap:10px;align-items:baseline}
+.review div b{flex:none;font-family:var(--display)}
+.review .rw{color:var(--win)} .review .rl{color:var(--lose)}
+.snap{color:var(--gold);font-family:var(--display);font-weight:600;margin:0}
+
+@media (max-width:420px){.paddles{gap:5px}.pad .face{font-size:15px}.lots{max-width:50%}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.gavel{opacity:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="10" width="22" height="12" rx="3" transform="rotate(-35 19 16)" fill="#f0b93a"/><rect x="21" y="20" width="5" height="22" rx="2.5" transform="rotate(-35 23.5 31)" fill="#b9821a"/><rect x="26" y="40" width="18" height="5" rx="2" fill="#a3a9c2"/></svg>
+      مزاد المراحل
+    </div>
+    <span class="course">التقنية الرقمية ٣ · أ. نوف المقاطي · الثانوية الثامنة</span>
+  </div>
+
+  <div class="plaque" id="plaque" hidden>
+    <div><div class="bal-l">رصيدك</div><div class="bal" id="bal">١٠٠</div></div>
+    <div class="lots" id="lots" aria-label="القطع"></div>
+  </div>
+
+  <!-- intro -->
+  <section class="card" id="intro">
+    <h1>أهلًا بكِ في <span>مزاد المراحل</span></h1>
+    <p class="lead">معكِ ١٠٠ نقطة. ستُعرض عليكِ ١٠ عبارات عن مراحل إنشاء تطبيقات الهواتف الذكية، بعضها صحيح وبعضها خطأ.</p>
+    <ul class="rules">
+      <li><b>١</b><span>احكمي على العبارة: <strong>صح</strong> أم <strong>خطأ</strong>؟</span></li>
+      <li><b>٢</b><span>ارفعي لوحة المزايدة: كم نقطة تراهنين على إجابتك؟ كلما وثقتِ أكثر راهني أكثر.</span></li>
+      <li><b>٣</b><span>إن أصبتِ ربحتِ مثل ما راهنتِ، وإن أخطأتِ خسرتِه.</span></li>
+    </ul>
+    <p class="lead" style="color:var(--gold)">صاحبة أعلى رصيد في الشعبة هي بطلة المزاد!</p>
+    <div class="who">
+      <label for="nm">اسمك<input class="field" id="nm" autocomplete="off" placeholder="مثال: سارة"></label>
+      <label for="cl" style="max-width:120px;min-width:90px">الشعبة<input class="field" id="cl" autocomplete="off" placeholder="٣/٢"></label>
+      <button class="btn" id="startBtn">ادخلي القاعة</button>
+    </div>
+  </section>
+
+  <!-- lot -->
+  <section class="card" id="lotCard" hidden>
+    <svg class="gavel" id="gavel" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="10" width="22" height="12" rx="3" transform="rotate(-35 19 16)" fill="#f0b93a"/><rect x="21" y="20" width="5" height="22" rx="2.5" transform="rotate(-35 23.5 31)" fill="#b9821a"/></svg>
+    <span class="sold" id="sold"></span>
+    <div class="lot-no"><span id="lotNo"></span><span id="lotLeft"></span></div>
+    <p class="stmt" id="stmt"></p>
+    <div id="betZone">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="tf" role="group" aria-label="حكمك">
+          <button id="tTrue" aria-pressed="false">صح ✓</button>
+          <button id="tFalse" aria-pressed="false">خطأ ✗</button>
+        </div>
+        <p class="sec">كم تراهنين؟</p>
+        <div class="paddles" id="paddles"></div>
+        <p class="hint" id="betHint">اختاري حكمك ثم ارفعي لوحة المزايدة</p>
+        <button class="btn" id="hammer" disabled>اطرقي المطرقة</button>
+      </div>
+    </div>
+    <div id="reveal" hidden style="display:flex;flex-direction:column;gap:14px">
+      <div class="verdict" id="verdict"></div>
+      <button class="btn" id="nextBtn">العبارة التالية</button>
+    </div>
+  </section>
+
+  <!-- final -->
+  <section class="card final" id="final" hidden>
+    <div class="trophy" id="trophy">🏆</div>
+    <div class="cert-name" id="fName"></div>
+    <div class="fbal" id="fBal"></div>
+    <div class="title" id="fTitle"></div>
+    <div class="stats" id="stats"></div>
+    <div class="review" id="review"></div>
+    <p class="snap">صوّري رصيدك وأرسليه لمعلمتك</p>
+    <button class="btn" id="again">مزاد جديد</button>
+  </section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const ar=n=>String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
+const shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+
+const LOTS=[
+ ["أول مرحلة في إنشاء تطبيق الهاتف الذكي هي مرحلة التطوير.",false,"أول مرحلة هي التخطيط والتصميم، ثم التطوير."],
+ ["في مرحلة التخطيط نحدد الفكرة والهدف من التطبيق والفئة المستهدفة منه.",true,"هذا ما نبدأ به قبل أي تصميم أو برمجة."],
+ ["المخطط اليدوي للتطبيق يوضح واجهات المستخدم المختلفة وكيفية ارتباطها ببعضها.",true,"لذلك نرسمه في مرحلة التخطيط والتصميم."],
+ ["في مرحلة التطوير نستخدم أحد برامج تطوير تطبيقات الهواتف لتنفيذ التصميم.",true,"نحوّل التصميم الذي توصلنا إليه إلى تطبيق يعمل."],
+ ["نختبر التطبيق قبل أن نبدأ ببرمجته.",false,"الاختبار يأتي بعد التطوير، فلا نختبر شيئًا لم يُبنَ بعد."],
+ ["مرحلة الاختبار تشمل معالجة المشاكل التي تظهر في البرمجة أو التصميم وإضافة اللمسات الأخيرة.",true,"نختبر ونعالج ثم نضيف اللمسات الأخيرة."],
+ ["يمكن نشر التطبيق مباشرة بعد التخطيط لتوفير الوقت.",false,"لا ننشر قبل التطوير والاختبار، وإلا وصل للمستخدمين تطبيق لا يعمل."],
+ ["النشر يعني اعتماد التطبيق وتحميله في متجر التطبيقات.",true,"وهي المرحلة الرابعة: النشر والتسويق."],
+ ["برنامج Microsoft Word من برامج تطوير تطبيقات الهواتف الذكية.",false,"Word برنامج تطبيقي لمعالجة النصوص. من برامج التطوير: MIT App Inventor وThunkable وKodular."],
+ ["برنامج MIT App Inventor يتيح إنشاء التطبيقات باستخدام بيئة اللبنات دون كتابة المقطع البرمجي.",true,"بيئته تشبه برنامج سكراتش."],
+ ["تطبيقات الهواتف الذكية من برامج النظام.",false,"تطبيقات الهواتف برامج تطبيقية، أما برامج النظام فمثل أنظمة التشغيل."],
+ ["إذا ظهرت مشكلة في التصميم أثناء الاختبار نعالجها قبل النشر.",true,"معالجة المشاكل جزء من مرحلة الاختبار."]
+];
+const ROUNDS=10, BETS=[10,20,30,50,"all"];
+let deck=[],ri=0,bal=100,pick=null,bet=null,hist=[],peak=100,actx=null;
+
+function sound(win){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const t=actx.currentTime;
+  const o=actx.createOscillator(),g=actx.createGain();o.type="triangle";o.frequency.setValueAtTime(180,t);o.frequency.exponentialRampToValueAtTime(60,t+.15);
+  g.gain.setValueAtTime(.5,t);g.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+.2);
+  const o2=actx.createOscillator(),g2=actx.createGain();o2.frequency.value=win?880:220;o2.type=win?"sine":"sawtooth";
+  g2.gain.setValueAtTime(0,t+.25);g2.gain.linearRampToValueAtTime(.15,t+.3);g2.gain.exponentialRampToValueAtTime(.001,t+.7);
+  o2.connect(g2);g2.connect(actx.destination);o2.start(t+.25);o2.stop(t+.7);}catch(e){}}
+
+function lots(){$("lots").innerHTML=Array.from({length:ROUNDS},(_,k)=>`<i class="${k<hist.length?(hist[k].win?"w":"l"):k===ri?"now":""}"></i>`).join("")}
+function setBal(v){bal=v;peak=Math.max(peak,v);const b=$("bal");b.textContent=ar(v);b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
+
+function start(){
+  deck=shuffle(LOTS.map((_,i)=>i)).slice(0,ROUNDS);ri=0;hist=[];peak=100;
+  $("intro").hidden=true;$("final").hidden=true;$("plaque").hidden=false;$("lotCard").hidden=false;
+  bal=100;$("bal").textContent=ar(100);showLot();
+}
+function showLot(){
+  const L=LOTS[deck[ri]];pick=null;bet=null;
+  $("lotNo").textContent=`القطعة رقم ${ar(ri+1)}`;$("lotLeft").textContent=`متبقٍ ${ar(ROUNDS-ri-1)}`;
+  $("stmt").textContent=L[0];
+  $("betZone").hidden=false;$("reveal").hidden=true;$("lotLeft").style.visibility="";
+  $("gavel").classList.remove("hit");$("sold").classList.remove("show");
+  ["tTrue","tFalse"].forEach(id=>{$(id).classList.remove("sel");$(id).setAttribute("aria-pressed","false")});
+  $("paddles").innerHTML=BETS.map(b=>{const v=b==="all"?bal:b;const dis=v>bal||v<=0;
+    return `<button class="pad" data-b="${b}" ${dis?"disabled":""} aria-label="راهني ${b==="all"?"بكل رصيدك":ar(v)+" نقطة"}"><span class="face">${b==="all"?"الكل":ar(v)}</span><span class="stick"></span></button>`}).join("");
+  $("paddles").querySelectorAll(".pad").forEach(p=>p.onclick=()=>{bet=p.dataset.b==="all"?bal:+p.dataset.b;
+    $("paddles").querySelectorAll(".pad").forEach(x=>x.classList.toggle("sel",x===p));ready()});
+  ready();lots();
+}
+function choose(v){pick=v;$("tTrue").classList.toggle("sel",v===true);$("tFalse").classList.toggle("sel",v===false);
+  $("tTrue").setAttribute("aria-pressed",v===true);$("tFalse").setAttribute("aria-pressed",v===false);ready()}
+function ready(){const ok=pick!==null&&bet!==null;$("hammer").disabled=!ok;
+  $("betHint").textContent=ok?`تراهنين بـ ${ar(bet)} نقطة على أن العبارة ${pick?"صحيحة":"خاطئة"}`:pick===null?"اختاري حكمك ثم ارفعي لوحة المزايدة":"ارفعي لوحة المزايدة"}
+$("tTrue").onclick=()=>choose(true);$("tFalse").onclick=()=>choose(false);
+
+$("hammer").onclick=()=>{
+  const L=LOTS[deck[ri]],win=pick===L[1];
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
+  $("gavel").classList.add("hit");
+  const s=$("sold");s.textContent=win?"رابحة!":"خاسرة";s.style.color=win?"var(--win)":"var(--lose)";s.classList.add("show");
+  sound(win);
+  hist.push({i:deck[ri],win,bet});
+  const nb=win?bal+bet:bal-bet;
+  $("betZone").hidden=true;$("reveal").hidden=false;$("lotLeft").style.visibility="hidden";
+  $("verdict").className="verdict "+(win?"w":"l");
+  $("verdict").innerHTML=`<span class="big">${win?"+":"−"}${ar(bet)} نقطة</span><p><strong>العبارة ${L[1]?"صحيحة":"خاطئة"}.</strong> ${L[2]}</p>`;
+  setBal(nb);
+  const last=ri===ROUNDS-1, broke=nb<=0;
+  $("nextBtn").textContent=broke?"نفد رصيدك، اعرضي النتيجة":last?"اعرضي نتيجتي":"العبارة التالية";
+  $("nextBtn").dataset.end=(broke||last)?"1":"";
+  lots();$("nextBtn").focus({preventScroll:true});
+};
+$("nextBtn").onclick=()=>{if($("nextBtn").dataset.end)return finish();ri++;showLot()};
+
+function finish(){
+  $("lotCard").hidden=true;$("final").hidden=false;lots();
+  const nm=$("nm").value.trim(),cl=$("cl").value.trim();
+  const right=hist.filter(h=>h.win).length;
+  $("fName").textContent=(nm||"المزايِدة")+(cl?` · ${cl}`:"");
+  $("fBal").innerHTML=`${ar(bal)}<small> نقطة</small>`;
+  const t=bal===0?["أفلستِ هذه المرة!","💸"]:bal>=400?["خبيرة المزاد","🏆"]:bal>=200?["مزايِدة ذكية","🥇"]:bal>100?["مزايِدة واعدة","🥈"]:["راجعي المراحل وعودي أقوى","📘"];
+  $("fTitle").textContent=t[0];$("trophy").textContent=t[1];
+  $("stats").innerHTML=`<div><b>${ar(right)}/${ar(hist.length)}</b><span>إجابات صحيحة</span></div><div><b>${ar(peak)}</b><span>أعلى رصيد</span></div><div><b>${ar(Math.max(...hist.map(h=>h.bet),0))}</b><span>أكبر رهان</span></div>`;
+  $("review").innerHTML=hist.map(h=>`<div><b class="${h.win?"rw":"rl"}">${h.win?"✓":"✗"}</b><span>${LOTS[h.i][0]} <span style="color:var(--muted)">(${LOTS[h.i][1]?"صح":"خطأ"})</span></span></div>`).join("");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("startBtn").onclick=start;$("again").onclick=start;
+</script>
+</body>
+</html>
